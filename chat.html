@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Staff Registration Form</title>
+  <link rel="stylesheet" href="">
+  <style>
+     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+ :root 
+ {
+  --primary-color: #f08080; 
+  --secondary-color: #ffdab9;
+  --subhead-color:#f8ad9d;
+  --text-color: #333;
+  --border-color: #fbc4ab;
+  --error-color: #f74835;
+  --success-color: #2ecc71;
+}
+body{
+  position: relative;
+  font-family: 'Times New Roman', Times, serif;
+  background-color: var(--secondary-color);
+  margin: 0;
+  padding: 2rem;
+  color: var(--text-color);
+}
+/* --- Form Container --- */
+.form-container{
+  background-color: #fdf9f9;
+  margin-left: 50px;
+  margin-right: 50px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+}
+h1{
+  text-align: center;
+  color: #da0b0b;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  margin-left: 20%;
+  margin-right: 20%;
+  border-radius: 20px;
+}
+/* --- Fieldset & Legend for Grouping --- */
+fieldset{
+  margin: 30px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 2rem;
+}
+legend{
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--subhead-color);
+  padding: 0 0.5rem; 
+}
+/* --- Responsive Grid Layout --- */
+.form-grid{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap:1.5rem;
+
+}
+@media (min-width: 768px)
+{
+  .form-grid {
+    grid-template-columns: repeat(2, 1fr);
+    }
+}
+.form-group{
+  display: flex;
+  flex-direction: column;
+}
+.full-width{
+  grid-column: 1/-1;
+}
+label{
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+.required-star{
+  color: var(--error-color);
+}
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+input[type="number"],
+select
+{
+  width: 90%;
+  padding: 0.5rem;
+  border: 0.4px solid var(--subhead-color);
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.3s,box-shadow 0.3s;
+  
+} 
+textarea{
+  resize: horizontal;
+  min-height: 80px;
+  width: 95.5%;
+  padding: 0.5rem;
+  border: 0.4px solid var(--subhead-color);
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.3s,box-shadow 0.3s;
+}
+input:focus, select:focus, textarea:focus{
+  outline: none;
+  background-color: #fde6e6;
+  box-shadow: 0 0 0 3px rgba(74,144,226,0.15);
+}
+input.invalid,select.invalid,textarea.invalid{border-color: var(--error-color);}
+.error-message{
+  color:var(--error-color);
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  display: none;
+}
+#photo-preview{
+  max-width: 100px;
+  max-height: 100px;
+  border-radius: 20%;
+  margin-top: 1rem;
+  object-fit: cover;
+  display: none;
+  border:2px solid var(--border-color);
+}
+.button-container{
+  display: flex;
+  justify-content: center;
+  gap:1rem;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  padding-bottom: 20px;
+}
+.btn{
+  padding: 0.8rem 1.8rem;
+  border:none;
+  border-radius: 6px;
+  font-size:1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3 ease;
+}
+.btn-primary{
+  background-color: var(--primary-color);
+  color: white;
+}
+.btn-primary:hover
+{
+opacity: 0.9;
+}
+.btn-secondary{
+  background-color: #e0e0e0;
+  color: #333;
+}
+.btn-secondary:hover{
+  background-color: #bdbdbd;
+}
+/* --- Notification Bar Styling --- */
+.notification-bar{
+  position: absolute;
+  top:0;
+  left:0;
+  width:100%;
+  padding: 1rem;
+  text-align: center;
+  color: white;
+  font-weight: 600;
+  transform: translateY(-100%);
+  transition: transform 0.3s ease-in-out;
+  z-index:1001;
+}
+.notification-bar.show {
+  transform: translateY(0);
+}
+.notification-bar.success { background-color: var(--success-color); }
+.notification-bar.error { background-color: var(--error-color); }
+/* --- Modal Styling --- */
+.modal-overlay{
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  display:flex;
+  align-items: center; justify-content: center;
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+.modal-overlay.visible{opacity:1;visibility: visible;}
+.modal-box{
+  background:white;padding: 2rem; border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  width: 90%; max-width: 400px; text-align: center;
+}
+.modal-title { 
+  font-size: 1.5rem; 
+  font-weight: 600; 
+  margin-bottom: 1rem; 
+}
+.modal-message { 
+  margin-bottom: 1.5rem;
+}
+.modal-buttons { 
+  display: flex; 
+  justify-content: center; 
+  gap: 1rem; 
+}
+
+/* --- Success Popup Styling --- */
+.success-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.success-popup.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.success-popup .icon {
+  font-size: 3rem;
+  color: var(--success-color);
+  margin-bottom: 1rem;
+}
+
+.success-popup h2 {
+  color: var(--success-color);
+  margin-bottom: 1rem;
+}
+
+.success-popup p {
+  margin-bottom: 1.5rem;
+}
+
+.success-popup .btn {
+  width: 100%;
+}
+  </style>
+</head>
+<body>
+  <div class="form-container">
+        <div id="notification-bar" class="notification-bar"></div>
+        <h1>Staff Registration Form</h1>
+        <form id="staffForm" novalidate>
+            
+            <fieldset>
+                <legend>Personal Details</legend>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="firstName">First Name <span class="required-star">*</span></label>
+                        <input type="text" id="firstName" placeholder="e.g., John" required>
+                        <div class="error-message">First name is required.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name <span class="required-star">*</span></label>
+                        <input type="text" id="lastName" placeholder="e.g., Doe" required>
+                        <div class="error-message">Last name is required.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">Gender <span class="required-star">*</span></label>
+                        <select id="gender" required>
+                            <option value="" disabled selected>Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <div class="error-message">Please select a gender.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="dob">Date of Birth <span class="required-star">*</span></label>
+                        <input type="date" id="dob" required>
+                        <div class="error-message">Date of birth is required.</div>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="address">Address <span class="required-star">*</span></label>
+                        <textarea id="address" placeholder="Enter full address" required></textarea>
+                        <div class="error-message">Address is required.</div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Contact Details</legend>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="email">Email <span class="required-star">*</span></label>
+                        <input type="email" id="email" placeholder="you@example.com" required>
+                        <div class="error-message">Please enter a valid email address (e.g., user@example.com)</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Mobile Number <span class="required-star">*</span></label>
+                        <input type="tel" id="phone" placeholder="10-digit mobile number" required maxlength="10">
+                        <div class="error-message">Please enter a valid 10-digit phone number</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="parentName">Parent/Guardian Name <span class="required-star">*</span></label>
+                        <input type="text" id="parentName" required>
+                        <div class="error-message">Parent/Guardian name is required.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="emergencyNumber">Emergency Number <span class="required-star">*</span></label>
+                        <input type="tel" id="emergencyNumber" placeholder="10-digit emergency number" required maxlength="10">
+                        <div class="error-message">Please enter a valid 10-digit emergency number</div>
+                    </div>
+                </div>
+            </fieldset>
+            
+            <fieldset>
+                <legend>Experience</legend>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="employeeId">Employee ID <span class="required-star">*</span></label>
+                        <input type="text" id="employeeId" required>
+                        <div class="error-message">Employee ID is required.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="joiningDate">Date of Joining <span class="required-star">*</span></label>
+                        <input type="date" id="joiningDate" required>
+                        <div class="error-message">Joining date is required.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="employeeType">Employee Type <span class="required-star">*</span></label>
+                        <select id="employeeType" required>
+                            <option value="" disabled selected>Select Type</option>
+                            <option value="Full-Time">Full-Time</option>
+                            <option value="Part-Time">Part-Time</option>
+                            <option value="Contract">Contract</option>
+                        </select>
+                        <div class="error-message">Please select an employee type.</div>
+                    </div>
+                     <div class="form-group">
+                        <label for="jobDescription">Job Description <span class="required-star">*</span></label>
+                        <input type="text" id="jobDescription" required>
+                        <div class="error-message">Job description is required.</div>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="profilePhoto">Profile Photo</label>
+                        <input type="file" id="profilePhoto" accept="image/png, image/jpeg">
+                        <img id="photo-preview" src="#" alt="Photo Preview"/>
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Bank Account Details</legend>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="bankName">Bank Name <span class="required-star">*</span></label>
+                        <select id="bankName" required>
+                            <option value="" disabled selected>Select Bank</option>
+                            <option value="state bank">State Bank of India (SBI)</option>
+                            <option value="Union bank">Union Bank of India</option>
+                            <option value="ICICI Bank">ICICI Bank</option>
+                            <option value="Axis Bank">Axis Bank</option>
+                            <option value="HDFC Bank">HDFC Bank</option>
+                            <option value="Canara Bank">Canara Bank</option>
+                            <option value="Indian Bank">Indian Bank</option>
+                            <option value="IOB">Indian Overseas Bank (IOB)</option>
+                        </select>
+                        <div class="error-message">Bank name is required.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="accountNumber">Account Number <span class="required-star">*</span></label>
+                        <input type="text" id="accountNumber" required>
+                        <div class="error-message">Account number is required.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="branchName">Branch Name <span class="required-star">*</span></label>
+                        <input type="text" id="branchName" required>
+                        <div class="error-message">Branch name is required.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="ifscCode">IFSC Code <span class="required-star">*</span></label>
+                        <input type="text" id="ifscCode" required>
+                        <div class="error-message">IFSC code is required.</div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="button-container">
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="button" class="btn btn-secondary" onclick="confirmClear()">Clear</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal-box">
+            <h2 id="modalTitle" class="modal-title">Confirm Action</h2>
+            <p id="modalMessage" class="modal-message">Are you sure?</p>
+            <div id="modalButtons" class="modal-buttons">
+                <button type="button" class="btn btn-secondary" id="modalCancel">Cancel</button>
+                <button type="button" class="btn btn-primary" id="modalConfirm">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Popup -->
+    <div id="successPopup" class="success-popup">
+        <div class="icon">✓</div>
+        
+        <p>Your staff registration form has been submitted successfully.</p>
+        <button class="btn btn-primary" onclick="hideSuccessPopup()">OK</button>
+    </div>
+  
+<script>
+    // ?--main function--
+    const form = document.getElementById('staffForm');
+    const requiredInputs = form.querySelectorAll('[required]');
+    const notificationBar = document.getElementById('notification-bar');
+    const confirmModal = document.getElementById('confirmModal');
+    const successPopup = document.getElementById('successPopup');
+
+    // --- Email Validation Function ---
+    function validateEmail(email) {
+        const re = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        return re.test(String(email).toLowerCase());
+    }
+
+    // --- Phone Number Validation ---
+    function validatePhoneNumber(phone) {
+        return /^\d{10}$/.test(phone);
+    }
+
+    // --- Validation Logic ---
+    function showError(input, message) {
+        const formGroup = input.parentElement;
+        const errorDisplay = formGroup.querySelector('.error-message');
+        errorDisplay.innerText = message; 
+        errorDisplay.style.display = 'block';
+        input.classList.add('invalid');
+    }
+
+    function showSuccess(input) {
+        const formGroup = input.parentElement;
+        const errorDisplay = formGroup.querySelector('.error-message');
+        errorDisplay.style.display = 'none';
+        input.classList.remove('invalid');
+    }
+
+    function validateInput(input) {
+        // Special handling for email field
+        if (input.type === 'email' || input.id === 'email') {
+            if (input.value.trim() === '') {
+                showError(input, 'Email is required');
+                return false;
+            } else if (!validateEmail(input.value)) {
+                showError(input, 'Please enter a valid email address');
+                return false;
+            }
+            showSuccess(input);
+            return true;
+        }
+        
+        // Special handling for phone numbers
+        if (input.id === 'phone' ) {
+            if (input.value.trim() === '') {
+                showError(input, 'Mobile number is required');
+                return false;
+            } else if (!validatePhoneNumber(input.value)) {
+                showError(input, 'Please enter a valid 10 digit mobile number');
+                return false;
+            }
+            showSuccess(input);
+            return true;
+        }
+        if(input.id === 'emergencyNumber'){
+            if (input.value.trim() === '') {
+                showError(input, 'Emergency number is required');
+                return false;
+            } else if (!validatePhoneNumber(input.value)) {
+                showError(input, 'Please enter a valid 10 digit mobile number');
+                return false;
+            }
+            showSuccess(input);
+            return true;
+        }
+        
+        // Standard validation for other fields
+        if (!input.checkValidity()) {
+            if (input.validity.valueMissing) {
+                showError(input, `${input.labels[0].textContent.replace(' *','')} is required.`);
+            } else {
+                showError(input, input.validationMessage);
+            }
+            return false;
+        }
+        showSuccess(input);
+        return true;
+    }
+
+    // --- Form Submit Event ---
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        let firstInvalidInput = null;
+        let isFormValid = true;
+
+        requiredInputs.forEach(input => {
+            if (!validateInput(input)) {
+                if (!firstInvalidInput) {
+                    firstInvalidInput = input;
+                }
+                isFormValid = false;
+            }
+        });
+
+        if (isFormValid) {
+            showSuccessPopup();
+        } else {
+            showNotification('Please correct the errors before submitting.', 'error');
+            if (firstInvalidInput) {
+                firstInvalidInput.focus();
+                firstInvalidInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    });
+
+    // --- Phone Number Input Handling ---
+    function handlePhoneInput(input) {
+        // Remove all non-digit characters
+        input.value = input.value.replace(/\D/g, '');
+        
+        // Truncate to 10 digits if needed
+        if (input.value.length > 10) {
+            input.value = input.value.substring(0, 10);
+        }
+        
+        // Validate in real-time
+        validateInput(input);
+    }
+
+    const phoneInput = document.getElementById('phone');
+    const emergencyInput = document.getElementById('emergencyNumber');
+
+    // Set up event listeners for phone numbers
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function() {
+            handlePhoneInput(this);
+        });
+        phoneInput.addEventListener('blur', function() {
+            validateInput(this);
+        });
+    }
+
+    if (emergencyInput) {
+        emergencyInput.addEventListener('input', function() {
+            handlePhoneInput(this);
+        });
+        emergencyInput.addEventListener('blur', function() {
+            validateInput(this);
+        });
+    }
+
+    // --- Email Input Specific Validation ---
+    const emailInput = document.getElementById('email');
+    emailInput.addEventListener('input', function() {
+        validateInput(this);
+    });
+    emailInput.addEventListener('blur', function() {
+        validateInput(this);
+    });
+
+    // --- Input Blur Validation ---
+    requiredInputs.forEach(input => {
+        // Skip phone inputs as they have custom handlers
+        if (input.id !== 'phone' && input.id !== 'emergencyNumber') {
+            input.addEventListener('blur', () => {
+                validateInput(input);
+            });
+        }
+    });
+
+    // --- Notification ---
+    function showNotification(message, type = 'success') {
+        notificationBar.textContent = message;
+        notificationBar.className = `notification-bar ${type}`;
+        notificationBar.classList.add('show');
+        setTimeout(() => {
+            notificationBar.classList.remove('show');
+        }, 3000);
+    }
+
+    // --- Clear Form with Confirmation ---
+    function confirmClear() {
+        showConfirmModal('Are you sure you want to clear all fields?', () => {
+            form.reset();
+            requiredInputs.forEach(input => showSuccess(input));
+            document.getElementById('photo-preview').style.display = 'none';
+            showNotification('Form cleared.', 'success');
+        });
+    }
+
+    // --- Confirmation Modal Logic ---
+    function showConfirmModal(message, onConfirmCallback) {
+        const modalMessage = confirmModal.querySelector('#modalMessage');
+        const confirmBtn = confirmModal.querySelector('#modalConfirm');
+        const cancelBtn = confirmModal.querySelector('#modalCancel');
+
+        modalMessage.textContent = message;
+        confirmModal.classList.add('visible');
+
+        const confirmHandler = () => {
+            onConfirmCallback();
+            hideConfirmModal();
+            confirmBtn.removeEventListener('click', confirmHandler);
+            cancelBtn.removeEventListener('click', cancelHandler);
+        };
+
+        const cancelHandler = () => {
+            hideConfirmModal();
+            confirmBtn.removeEventListener('click', confirmHandler);
+            cancelBtn.removeEventListener('click', cancelHandler);
+        };
+
+        confirmBtn.addEventListener('click', confirmHandler);
+        cancelBtn.addEventListener('click', cancelHandler);
+    }
+
+    function hideConfirmModal() {
+        confirmModal.classList.remove('visible');
+    }
+
+    // --- Success Popup Functions ---
+    function showSuccessPopup() {
+        successPopup.classList.add('visible');
+    }
+
+    function hideSuccessPopup() {
+        successPopup.classList.remove('visible');
+        form.reset();
+    }
+
+    // --- Photo Preview ---
+    const photoInput = document.getElementById('profilePhoto');
+    const photoPreview = document.getElementById('photo-preview');
+    photoInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                photoPreview.src = e.target.result;
+                photoPreview.style.display = 'block';
+            };
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+</script>
+</body>
+</html>
